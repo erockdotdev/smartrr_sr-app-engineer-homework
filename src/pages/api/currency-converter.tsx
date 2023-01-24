@@ -3,10 +3,10 @@ import { DataManagementClient } from "src/services/contentful/content-management
 import { CurrencyConverter } from "src/services/currency-converter";
 
 const formatCurrencyConversionResponse = (latestCurrency: any) => {
-  //From [USD] to [BRL] | [2023-01-24]
   const timestamp = new Date().toJSON();
   const { base_currency_code, amount } = latestCurrency;
   const toCountryCode = Object.keys(latestCurrency.rates)[0];
+
   return {
     title: {
       "en-US": `From [${base_currency_code} to [${toCountryCode}] | [${timestamp}]`,
@@ -35,8 +35,8 @@ export default async function handler(
 ) {
   const latestCurrency = await CurrencyConverter();
   const formattedResponse = formatCurrencyConversionResponse(latestCurrency);
-  console.log("formattedResponse", formattedResponse);
-  DataManagementClient.getSpace("k9ah7n9n57cn")
+
+  DataManagementClient.getSpace(process.env.NEXT_PUBLIC_CONTENTFUL_SPACE_ID)
     .then((space: any) => space.getEnvironment("master"))
     .then((environment: any) =>
       environment.createEntry("convertedCurrency", {
