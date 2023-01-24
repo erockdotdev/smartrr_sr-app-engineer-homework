@@ -1,0 +1,11 @@
+name: hit-api-on-push
+run-name: ${{ github.actor }} is learning GitHub Actions
+on: [push]
+jobs:
+  cron-ish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Call Currency Conversion API Route
+        run: |
+          curl --request POST \
+          --url 'https://smartrr-sr-app-engineer-homework-ldp1i1k1g-erockdotdev.vercel.app/api/currency-converter'
