@@ -1,0 +1,15 @@
+name: gh actions test
+run-name: ${{github.actor}}'s gh action test
+on: [push]
+jobs:
+  im-just-a-gh-action-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Call Currency Conversion API route
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: "14"
+      - run: |
+        curl --request GET \
+        --url 'https://mysite.com/api/chron' 
