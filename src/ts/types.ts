@@ -3,7 +3,7 @@ export type ConvertedCurrencyFields = {
     "en-US": string;
   };
   from: {
-    "en-US": any;
+    "en-US": string;
   };
   to: {
     "en-US": string;
@@ -15,7 +15,7 @@ export type ConvertedCurrencyFields = {
     "en-US": string;
   };
   currencyConversion: {
-    "en-US": any;
+    "en-US": CurrencyConverterResponse;
   };
 };
 

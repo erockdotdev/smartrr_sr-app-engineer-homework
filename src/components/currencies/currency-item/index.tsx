@@ -1,12 +1,10 @@
+import style from "./styles.module.css";
 export default function CurrencyItem({ currencyItem }: any) {
-  const { date, from, to, currencyConversion } = currencyItem.fields;
+  const { date, to, currencyConversion } = currencyItem.fields;
   return (
-    <div style={{ borderBottom: "solid black 5px" }}>
-      <h3>
-        Base Currency: {from} | Compare Currency: {to}{" "}
-      </h3>
-      <p>Rate: {currencyConversion.rates[`${to}`].rate} </p>
+    <li className={style["currency-item"]}>
+      <h3>Rate: {currencyConversion.rates[`${to}`].rate} </h3>
       <p>Time Recorded: {date} </p>
-    </div>
+    </li>
   );
 }

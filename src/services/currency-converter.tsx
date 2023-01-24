@@ -22,7 +22,6 @@ export const CurrencyConverter = async (
     const body = await response.json();
     return body;
   } catch (e: any) {
-    //handle error
     throw Error(e);
   }
 };
