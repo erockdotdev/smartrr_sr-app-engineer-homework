@@ -73,16 +73,14 @@ export default function handler(
         fields: testEntry,
       })
     )
+    .then((entry: any) => entry.publish())
     .then((entry: any) => {
-      entry.publish();
-      // console.log("entry", entry);
       response.status(200).json({
-        stuff: "things",
-        test: "test",
+        status: "success",
+        message: `Entry ${entry.sys.id} published.`,
       });
     })
     .catch((e: any) => {
-      console.error("e==><", e);
-      response.status(500).json(e);
+      response.status(500).json({ error: e });
     });
 }

@@ -1,5 +1,5 @@
 name: hit-api-on-push
-run-name: ${{ github.actor }} is learning GitHub Actions
+run-name: ${{ github.actor }} pushing stuff up!
 on: [push]
 jobs:
   cron-ish:
