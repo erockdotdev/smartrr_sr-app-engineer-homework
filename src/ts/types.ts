@@ -1,3 +1,4 @@
+import { Entry } from "contentful";
 export type ConvertedCurrencyFields = {
   title: {
     "en-US": string;
@@ -18,6 +19,19 @@ export type ConvertedCurrencyFields = {
     "en-US": CurrencyConverterResponse;
   };
 };
+
+export type ConvertedCurrencyResponse = {
+  title: string;
+  from: string;
+  to: string;
+  amount: number;
+  date: string;
+  currencyConversion: {
+    "en-US": CurrencyConverterResponse;
+  };
+};
+
+export type ConvertedCurrencyEntry = Entry<ConvertedCurrencyResponse>;
 
 export type CurrencyConverterParams = {
   from: string;

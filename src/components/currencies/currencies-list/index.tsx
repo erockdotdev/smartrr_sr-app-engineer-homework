@@ -1,8 +1,11 @@
 import React from "react";
+import { ConvertedCurrencyEntry, ConvertedCurrencyFields } from "src/ts/types";
 import CurrencyItem from "../currency-item";
 
-const renderCurrencyListItems = (convertedCurrencies: any) => {
-  return convertedCurrencies.map((currencyItem: any) => {
+const renderCurrencyListItems = (
+  convertedCurrencies: ConvertedCurrencyEntry[]
+) => {
+  return convertedCurrencies.map((currencyItem: ConvertedCurrencyEntry) => {
     return (
       <CurrencyItem key={currencyItem.sys.id} currencyItem={currencyItem} />
     );
