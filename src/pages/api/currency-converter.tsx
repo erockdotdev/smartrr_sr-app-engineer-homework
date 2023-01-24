@@ -30,7 +30,7 @@ import { DataManagementClient } from "src/services/contentful/content-management
 
 const testEntry = {
   title: {
-    "en-US": "Test test test test from the API callOLDNESS",
+    "en-US": "Test test test test from the API callCHRON",
   },
   from: {
     "en-US": "USD",
