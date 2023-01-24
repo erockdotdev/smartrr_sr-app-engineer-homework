@@ -14,7 +14,9 @@ async function createEntry<T extends KeyValueMap>(
       `${process.env.NEXT_PUBLIC_CONTENTFUL_SPACE_ID}`
     );
     const environment = await space.getEnvironment(
-      `${process.env.NEXT_PUBLIC_CONTENTFUL_ENVIRONMENT}`
+      // @todo: the serverless function is not picking up this env var, will have to follow up
+      "master"
+      // `${process.env.NEXT_PUBLIC_CONTENTFUL_ENVIRONMENT}`
     );
     const entry = await environment.createEntry(contentTypeId, { fields });
     // @todo publish should be callable on entry - will have to come back to this work around
