@@ -1,13 +1,16 @@
+import {
+  CurrencyConverterParams,
+  CurrencyConverterResponse,
+} from "src/ts/types";
+
 export const CurrencyConverter = async (
-  from: string = "USD",
-  to: string = "BRL",
-  amount: string = "1"
-) => {
-  const params = { format: "json", from, to, amount };
+  params: CurrencyConverterParams
+): Promise<CurrencyConverterResponse> => {
+  const searchParams = { format: "json", ...params };
   try {
     const response = await fetch(
       "https://currency-converter5.p.rapidapi.com/currency/convert?" +
-        new URLSearchParams(params),
+        new URLSearchParams(searchParams),
       {
         headers: {
           "Content-Type": "application/json",
@@ -18,8 +21,8 @@ export const CurrencyConverter = async (
     );
     const body = await response.json();
     return body;
-  } catch (e) {
+  } catch (e: any) {
     //handle error
-    console.error({ error: e });
+    throw Error(e);
   }
 };
