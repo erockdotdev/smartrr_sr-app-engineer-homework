@@ -1,76 +1,46 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { DataManagementClient } from "src/services/contentful/content-management";
+import { CurrencyConverter } from "src/services/currency-converter";
 
-// accept same params as currency converter
-
-// const options = {
-//   method: "GET",
-//   url: "https://currency-converter5.p.rapidapi.com/currency/convert",
-//   params: { format: "json", from: "AUDs", to: "CADs", amount: "11.22" },
-//   headers: {
-//     "X-RapidAPI-Key": "d568196157msh99c319e6d6a940ep1fd2aejsn3ff0b1201aa1",
-//     "X-RapidAPI-Host": "currency-converter5.p.rapidapi.com",
-//   },
-// };
-
-// const params = { format: "json", from: "AUD", to: "CAD", amount: "11.22" };
-//   const response = await fetch(
-//     "https://currency-converter5.p.rapidapi.com/currency/convert?" +
-//       new URLSearchParams(params),
-//     {
-//       headers: {
-//         "Content-Type": "application/json",
-//         "X-RapidAPI-Key": "d568196157msh99c319e6d6a940ep1fd2aejsn3ff0b1201aa1",
-//         "X-RapidAPI-Host": "currency-converter5.p.rapidapi.com",
-//       },
-//     }
-//   );
-//   const body = await response.json();
-//   console.log("body", body);
-
-const testEntry = {
-  title: {
-    "en-US": "Test test test test from the API callCHRON",
-  },
-  from: {
-    "en-US": "USD",
-  },
-  to: {
-    "en-US": "BRL",
-  },
-  amount: {
-    "en-US": 1,
-  },
-  date: {
-    "en-US": "2023-01-23T22:09-05:00",
-  },
-  currencyConversion: {
-    "en-US": {
-      rates: {
-        BRL: {
-          rate: "5.2076",
-          currency_name: "Brazilian real",
-          rate_for_amount: "5.2076",
-        },
-      },
-      amount: "1.0000",
-      status: "success",
-      updated_date: "2023-01-24",
-      base_currency_code: "USD",
-      base_currency_name: "United States dollar",
+const formatCurrencyConversionResponse = (latestCurrency: any) => {
+  //From [USD] to [BRL] | [2023-01-24]
+  const timestamp = new Date().toJSON();
+  const { base_currency_code, amount } = latestCurrency;
+  const toCountryCode = Object.keys(latestCurrency.rates)[0];
+  return {
+    title: {
+      "en-US": `From [${base_currency_code} to [${toCountryCode}] | [${timestamp}]`,
     },
-  },
+    from: {
+      "en-US": base_currency_code,
+    },
+    to: {
+      "en-US": toCountryCode,
+    },
+    amount: {
+      "en-US": parseInt(amount),
+    },
+    date: {
+      "en-US": timestamp,
+    },
+    currencyConversion: {
+      "en-US": latestCurrency,
+    },
+  };
 };
 
-export default function handler(
+export default async function handler(
   request: NextApiRequest,
   response: NextApiResponse
 ) {
+  const latestCurrency = await CurrencyConverter();
+  const formattedResponse = formatCurrencyConversionResponse(latestCurrency);
+  console.log("formattedResponse", formattedResponse);
   DataManagementClient.getSpace("k9ah7n9n57cn")
     .then((space: any) => space.getEnvironment("master"))
     .then((environment: any) =>
       environment.createEntry("convertedCurrency", {
-        fields: testEntry,
+        fields: formattedResponse,
       })
     )
     .then((entry: any) => entry.publish())
