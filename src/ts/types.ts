@@ -1,25 +1,27 @@
 import { Entry } from "contentful";
-export type ConvertedCurrencyFields = {
-  title: {
-    "en-US": string;
-  };
-  from: {
-    "en-US": string;
-  };
-  to: {
-    "en-US": string;
-  };
-  amount: {
-    "en-US": number;
-  };
-  date: {
-    "en-US": string;
-  };
-  currencyConversion: {
-    "en-US": CurrencyConverterResponse;
-  };
+import { Entry as CMAEntry, KeyValueMap } from "contentful-management";
+
+/**
+ * Creating Entries requires localization
+ * ContentfulEntryApi
+ * EntryProps
+ */
+
+// Content Management API (CMA) types
+type CMAItem<T> = {
+  "en-US": T;
 };
 
+export type CMAConvertedCurrency = {
+  title: CMAItem<string>;
+  from: CMAItem<string>;
+  to: CMAItem<string>;
+  amount: CMAItem<number>;
+  date: CMAItem<string>;
+  currencyConversion: CMAItem<CurrencyConverterResponse>;
+};
+
+//
 export type ConvertedCurrencyResponse = {
   title: string;
   from: string;

@@ -1,5 +1,5 @@
 import React from "react";
-import { ConvertedCurrencyEntry, ConvertedCurrencyFields } from "src/ts/types";
+import { ConvertedCurrencyEntry } from "src/ts/types";
 import CurrencyItem from "../currency-item";
 
 const renderCurrencyListItems = (

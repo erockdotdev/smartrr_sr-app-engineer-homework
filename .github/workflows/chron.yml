@@ -1,7 +1,7 @@
 name: currency-conversion-job
 on:
   schedule:
-    - cron: "*/15 * * * *"
+    - cron: "1 * * * *"
 jobs:
   cron:
     runs-on: ubuntu-latest

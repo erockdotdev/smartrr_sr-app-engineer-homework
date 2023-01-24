@@ -1,11 +1,12 @@
-import Head from "next/head";
 import { useEffect, useState } from "react";
+
 import { getEntries } from "src/services/contentful/content-delivery";
-import styles from "@/pages/index.module.css";
 import CurrencyList from "src/components/currencies/currencies-list";
-import { ConvertedCurrencyEntry, ConvertedCurrencyFields } from "src/ts/types";
+import { ConvertedCurrencyEntry } from "src/ts/types";
 import { ContentTypeIDs } from "src/ts/enums";
 import { isWithinTwentyFourHours } from "src/lib/isWithinTwentyFourHours";
+
+import styles from "@/pages/index.module.css";
 
 export default function Home() {
   const [convertedCurrencies, setConvertedCurrencies] = useState<

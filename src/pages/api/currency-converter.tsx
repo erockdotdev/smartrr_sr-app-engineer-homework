@@ -3,7 +3,7 @@ import { formatCurrencyConversionResponse } from "src/lib/contentful-currency-co
 import { createEntry } from "src/services/contentful/content-management";
 import { CurrencyConverter } from "src/services/currency-converter";
 import { ContentTypeIDs } from "src/ts/enums";
-import { ConvertedCurrencyFields, CurrencyConverterParams } from "src/ts/types";
+import { CMAConvertedCurrency, CurrencyConverterParams } from "src/ts/types";
 
 export default async function handler(
   request: NextApiRequest,
@@ -16,10 +16,10 @@ export default async function handler(
   };
   try {
     const latestCurrency = await CurrencyConverter(defaultParams);
-    const formattedResponse: ConvertedCurrencyFields =
+    const formattedResponse: CMAConvertedCurrency =
       formatCurrencyConversionResponse(latestCurrency);
 
-    const entry = await createEntry<ConvertedCurrencyFields>(
+    const entry = await createEntry<CMAConvertedCurrency>(
       ContentTypeIDs.convertedCurrency,
       formattedResponse
     );
