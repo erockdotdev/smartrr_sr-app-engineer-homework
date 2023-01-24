@@ -9,4 +9,4 @@ jobs:
       - name: Call Currency Conversion API Route
         run: |
           curl --request POST \
-          --url 'https://smartrr-sr-app-engineer-homework-ldp1i1k1g-erockdotdev.vercel.app/api/currency-converter'
+          --url 'https://smartrr-sr-app-engineer-homework.vercel.app/api/currency-converter'
