@@ -22,7 +22,7 @@ export class ManageContentClient implements IManageContentClient {
     this.client = client;
   }
   async publishContent(entry: Entry) {
-    entry.publish();
+    await entry.publish();
   }
   async createContent(
     contentType: ContentTypes,
