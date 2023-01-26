@@ -19,8 +19,18 @@ export class FetchClient {
         ? `?${new URLSearchParams(searchParams)}`
         : "";
       const url = new URL(route, this.baseUrl);
+      // const response = await fetch(url + "/" + params, {
+      //   headers: this.headers,
+      // });
+
+      console.log(process.env.NEXT_PUBLIC_CURRENCY_CONVERTER_API_KEY);
+      // @todo, this is failing on the next functions when programmatically added - hardcoding for now
       const response = await fetch(url + "/" + params, {
-        headers: this.headers,
+        headers: {
+          "Content-Type": "application/json",
+          "X-RapidAPI-Key": `${process.env.NEXT_PUBLIC_CURRENCY_CONVERTER_API_KEY}`,
+          "X-RapidAPI-Host": "currency-converter5.p.rapidapi.com",
+        },
       });
       const body = await response.json();
       return body;

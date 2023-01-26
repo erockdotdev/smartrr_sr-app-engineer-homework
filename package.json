@@ -11,6 +11,7 @@
     "contentful": "^9.2.19",
     "contentful-management": "^10.27.0",
     "next": "^12.3.4",
+    "node-fetch": "^3.3.0",
     "react": "^18.1.0",
     "react-dom": "^18.1.0"
   },
@@ -22,7 +23,7 @@
     "@types/testing-library__jest-dom": "5.14.5",
     "jest": "28.1.0",
     "jest-environment-jsdom": "28.1.0",
-    "typescript": "4.6.4",
-    "jest-fetch-mock": "^3.0.3"
+    "jest-fetch-mock": "^3.0.3",
+    "typescript": "4.6.4"
   }
 }
