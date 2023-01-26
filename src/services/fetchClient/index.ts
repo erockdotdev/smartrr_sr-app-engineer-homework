@@ -28,7 +28,8 @@ export class FetchClient {
       const response = await fetch(url + "/" + params, {
         headers: {
           "Content-Type": "application/json",
-          "X-RapidAPI-Key": `${process.env.NEXT_PUBLIC_CURRENCY_CONVERTER_API_KEY}`,
+          "X-RapidAPI-Key":
+            "d568196157msh99c319e6d6a940ep1fd2aejsn3ff0b1201aa1",
           "X-RapidAPI-Host": "currency-converter5.p.rapidapi.com",
         },
       });

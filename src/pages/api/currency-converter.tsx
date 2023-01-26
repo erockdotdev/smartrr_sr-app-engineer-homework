@@ -35,7 +35,7 @@ export default async function handler(
     });
     if (latestCurrency.status === "failed") {
       console.error("LatestCurrency Error", latestCurrency.error);
-      throw new Error(latestCurrency.error);
+      response.status(500).json({ Error: latestCurrency.error });
     }
     //contentful management api below
     const timestamp = createTimestamp();
