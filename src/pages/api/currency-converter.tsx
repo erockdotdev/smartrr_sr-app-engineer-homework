@@ -44,7 +44,7 @@ export default async function handler(
     try {
       await manageContentClient.publishContent(entry);
     } catch (e: any) {
-      throw Error(`error publishing entry ${entry.sys.id} to contentful`);
+      throw Error(`error publishing entry ${entry.sys.id} to contentful`, e);
     }
 
     response.status(200).json({
@@ -52,6 +52,6 @@ export default async function handler(
       message: `Successfully created entry for ${entry.sys.id}`,
     });
   } catch (error) {
-    response.status(500).json({ error });
+    response.status(500).json({ Error: error });
   }
 }
