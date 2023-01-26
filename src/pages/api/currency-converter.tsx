@@ -2,47 +2,54 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { formatCurrencyConversionResponse } from "src/lib/contentful-currency-conversion-format";
 import { createTimestamp } from "src/lib/createTimestamp";
 import {
-  createEntry,
-  publishEntry,
-} from "src/services/contentful/content-management";
-import { CurrencyConverter } from "src/services/currency-converter";
+  ContentfulManagementClient,
+  ManageContentClient,
+} from "src/services/contentful/content-management-api";
+import { defaultRoute } from "src/services/currency-converter";
 import { ContentTypeIDs } from "src/ts/enums";
-import { CMAConvertedCurrency, CurrencyConverterParams } from "src/ts/types";
+
+import { CurrencyConvertClient } from "src/services/currency-converter";
+import { ConvertCurrencyParams } from "src/ts/CurrencyConverterAPI";
+import { ConvertedCurrencyFields } from "src/ts/Contentful/content-management";
 
 export default async function handler(
   request: NextApiRequest,
   response: NextApiResponse
 ) {
-  const defaultParams: CurrencyConverterParams = {
-    from: "USD",
-    to: "BRL",
-    amount: "1",
-  };
-  try {
-    const latestCurrency = await CurrencyConverter(defaultParams);
-    const timestamp = createTimestamp();
-    const formattedResponse: CMAConvertedCurrency =
-      formatCurrencyConversionResponse(latestCurrency, timestamp);
+  const { query } = request;
+  const params = {
+    from: query.from,
+    to: query.to,
+    amount: query.amount,
+  } as ConvertCurrencyParams;
 
-    const entry = await createEntry<CMAConvertedCurrency>(
+  const manageContentClient = new ManageContentClient(
+    ContentfulManagementClient
+  );
+
+  try {
+    const latestCurrency = await CurrencyConvertClient.get({
+      route: defaultRoute,
+      searchParams: { format: "json", ...params },
+    });
+
+    // contentful management api below
+    const timestamp = createTimestamp();
+    const formattedResponse: ConvertedCurrencyFields =
+      formatCurrencyConversionResponse(latestCurrency, timestamp);
+    const entry = await manageContentClient.createContent(
       ContentTypeIDs.convertedCurrency,
       formattedResponse
     );
-    // @todo: redo this flow to publish entries
-    //create entry
-    // publish entry
-    // respond with info if entry was created AND published
-    // respond with appropriate error
-    if (entry) {
-      const publishedEntry = await publishEntry(entry);
-      return response.status(200).json({
+    // @todo: temp workaround for publish not succeeding on prod site
+    setTimeout(() => {
+      manageContentClient.publishContent(entry);
+      response.status(200).json({
         status: "success",
-        message: `Entry ${publishedEntry.sys.id} published.`,
+        message: `Successfully created entry for ${entry.sys.id}`,
       });
-    } else {
-      throw Error("unable to publish entry");
-    }
-  } catch (e: any) {
-    response.status(500).json({ error: e });
+    }, 300);
+  } catch (error) {
+    response.status(500).json({ error });
   }
 }

@@ -14,7 +14,7 @@ export type ConvertedCurrencyData = {
   updated_date: string;
 };
 
-export type CurrencyConvertParams = {
+export type ConvertCurrencyParams = {
   from: string;
   to: string;
   amount: string;

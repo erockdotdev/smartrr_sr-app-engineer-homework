@@ -1,4 +1,4 @@
-import { ConvertedCurrencyEntry } from "src/ts/Contentful/content-delivery-api";
+import { ConvertedCurrencyEntry } from "src/ts/Contentful/content-delivery";
 import style from "./styles.module.css";
 
 interface ICurrencyEntry {

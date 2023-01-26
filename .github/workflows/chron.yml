@@ -1,7 +1,7 @@
 name: currency-conversion-job
 on:
   schedule:
-    - cron: "1 * * * *"
+    - cron: "*/15 * * * *"
 jobs:
   cron:
     runs-on: ubuntu-latest
@@ -9,4 +9,4 @@ jobs:
       - name: Call Currency Conversion API Route
         run: |
           curl --request POST \
-          --url 'https://smartrr-sr-app-engineer-homework.vercel.app/api/currency-converter'
+          --url 'https://smartrr-sr-app-engineer-homework.vercel.app/api/currency-converter?from=USD&to=BRL&amount=1'

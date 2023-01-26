@@ -3,14 +3,14 @@ import { useEffect, useState } from "react";
 import {
   ContentfulDeliveryClient,
   QueryContentClient,
-} from "src/services/contentful/content-delivery";
+} from "src/services/contentful/content-delivery-api";
 import CurrencyList from "src/components/currencies/currencies-list";
-import { ConvertedCurrencyEntry } from "src/ts/Contentful/content-delivery-api";
+import { ConvertedCurrencyEntry } from "src/ts/Contentful/content-delivery";
 import { ContentTypeIDs } from "src/ts/enums";
 import { isWithinTwentyFourHours } from "src/lib/isWithinTwentyFourHours";
 
 import styles from "@/pages/index.module.css";
-import { ConvertedCurrencyEntryCollection } from "src/ts/Contentful/content-delivery-api";
+import { ConvertedCurrencyEntryCollection } from "src/ts/Contentful/content-delivery";
 
 export default function Home() {
   const [convertedCurrencies, setConvertedCurrencies] = useState<

@@ -1,12 +1,12 @@
 import {
-  CurrencyConverterParams,
-  CurrencyConverterResponse,
-} from "src/ts/types";
+  ConvertCurrencyParams,
+  ConvertedCurrencyData,
+} from "src/ts/CurrencyConverterAPI";
 
 export const CurrencyConverter = async (
-  params: CurrencyConverterParams
-): Promise<CurrencyConverterResponse> => {
-  const searchParams = { format: "json", ...params };
+  params: ConvertCurrencyParams
+): Promise<ConvertedCurrencyData> => {
+  const searchParams = { ...{ format: "json" }, ...params };
   try {
     const response = await fetch(
       "https://currency-converter5.p.rapidapi.com/currency/convert?" +

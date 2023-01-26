@@ -1,10 +1,10 @@
 import { ContentfulClientApi, createClient } from "contentful";
 
 import {
-  ContentTypes,
   ConvertedCurrencyFields,
   ConvertedCurrencyEntryCollection,
-} from "src/ts/Contentful/content-delivery-api";
+} from "src/ts/Contentful/content-delivery";
+import { ContentTypes } from "src/ts/Contentful";
 
 export const ContentfulDeliveryClient = createClient({
   space: `${process.env.NEXT_PUBLIC_CONTENTFUL_SPACE_ID}`,
@@ -27,9 +27,16 @@ export class QueryContentClient implements IQueryContentClient {
   async getContentByType(
     contentType: ContentTypes
   ): Promise<ConvertedCurrencyEntryCollection> {
-    const data = await this.client.getEntries<ConvertedCurrencyFields>(
-      contentType
-    );
-    return data;
+    try {
+      const data = await this.client.getEntries<ConvertedCurrencyFields>(
+        contentType
+      );
+      return data;
+    } catch (e: any) {
+      throw new Error(
+        `Error: Can not query content type with Id "${contentType}"`,
+        e
+      );
+    }
   }
 }
