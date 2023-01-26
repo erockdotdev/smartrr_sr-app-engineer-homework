@@ -20,7 +20,7 @@ export class FetchClient {
         : "";
       const url = new URL(route, this.baseUrl);
       const response = await fetch(url + "/" + params, {
-        headers: { ...this.headers },
+        headers: this.headers,
       });
       const body = await response.json();
       return body;

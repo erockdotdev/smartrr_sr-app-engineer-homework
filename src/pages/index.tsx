@@ -1,9 +1,6 @@
 import { useEffect, useState } from "react";
 
-import {
-  ContentfulDeliveryClient,
-  QueryContentClient,
-} from "src/services/contentful/content-delivery-api";
+import { queryContentClient } from "src/services/contentful/content-delivery-api";
 import CurrencyList from "src/components/currencies/currencies-list";
 import { ConvertedCurrencyEntry } from "src/ts/Contentful/content-delivery";
 import { ContentTypeIDs } from "src/ts/enums";
@@ -11,6 +8,7 @@ import { isWithinTwentyFourHours } from "src/lib/isWithinTwentyFourHours";
 
 import styles from "@/pages/index.module.css";
 import { ConvertedCurrencyEntryCollection } from "src/ts/Contentful/content-delivery";
+import { createTimestamp } from "../lib/createTimestamp";
 
 export default function Home() {
   const [convertedCurrencies, setConvertedCurrencies] = useState<
@@ -18,19 +16,28 @@ export default function Home() {
   >([]);
 
   useEffect(() => {
-    const queryContentClient = new QueryContentClient(ContentfulDeliveryClient);
+    // @todo: move to getServerSide props or add loading state
+    // also break filters and sorts into utility functions
     queryContentClient
       .getContentByType(ContentTypeIDs.convertedCurrency)
       .then((entries: ConvertedCurrencyEntryCollection) => {
-        const filteredEntries = entries.items.filter(
-          (entry: ConvertedCurrencyEntry) => {
-            // @todo: this seems like it is filtering out too many entries
-            return isWithinTwentyFourHours(entry.fields.date);
-          }
-        );
+        const filteredEntries = entries.items
+          .filter((entry: ConvertedCurrencyEntry) => {
+            const timestamp = createTimestamp();
+            const timeTest = isWithinTwentyFourHours(
+              timestamp,
+              entry.fields.date
+            );
+            return isWithinTwentyFourHours(timestamp, entry.fields.date);
+          })
+          .sort((a: ConvertedCurrencyEntry, b: ConvertedCurrencyEntry) => {
+            const aDate = new Date(a.fields.date);
+            const bDate = new Date(b.fields.date);
+            return bDate.getTime() - aDate.getTime();
+          });
         setConvertedCurrencies(filteredEntries);
       })
-      .catch((e: any) => console.error("Error", e));
+      .catch((e: any) => console.error(e));
   }, []);
   return (
     <div className={styles.container}>

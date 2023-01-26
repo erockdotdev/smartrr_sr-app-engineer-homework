@@ -7,12 +7,6 @@ const headers = {
   "X-RapidAPI-Host": "currency-converter5.p.rapidapi.com",
 };
 
-// export const defaultParams: CurrencyConverterParams = {
-//   from: "USD",
-//   to: "BRL",
-//   amount: "1",
-// };
-
 export const defaultRoute = "currency/convert";
 
 export const CurrencyConvertClient = new FetchClient(url, headers);

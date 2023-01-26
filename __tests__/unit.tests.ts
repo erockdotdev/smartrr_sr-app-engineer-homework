@@ -1,84 +1,110 @@
-import { ContentfulClientApi } from "contentful";
-import { formatCurrencyConversionResponse } from "src/lib/contentful-currency-conversion-format";
-import { isWithinTwentyFourHours } from "src/lib/isWithinTwentyFourHours";
-import { FetchClient } from "../src/services/fetchClient";
+import { ContentfulClientApi, EntryCollection } from "contentful";
+import { formatCurrencyConversionResponse } from "../src/lib/contentful-currency-conversion-format";
+import { isWithinTwentyFourHours } from "../src/lib/isWithinTwentyFourHours";
 import {
-  ContentfulDeliveryClient,
+  IQueryContentClient,
   QueryContentClient,
 } from "../src/services/contentful/content-delivery-api";
-import { CurrencyConverter } from "../src/services/currency-converter";
+// import { CurrencyConverter } from "../src/services/currency-converter";
+import { ContentTypeIDs } from "../src/ts/enums";
+import { convertedCurrencyDataMock } from "../src/mocks/convertedCurrencyData";
 
-describe("Lorem ipsum", () => {
-  let queryContentClient: QueryContentClient;
+const mockGetEntries = jest.fn();
+
+function getEntries<T>(query?: any) {
+  return new Promise<EntryCollection<T>>((resolve, reject) => {
+    if (Object.values(ContentTypeIDs).includes(query)) {
+      resolve(mockGetEntries());
+    }
+    reject("reject");
+  });
+}
+
+const MockQueryContentClient = {
+  getEntries,
+};
+
+describe("Query Content", () => {
+  let queryContentClient: IQueryContentClient;
   beforeAll(() => {
-    // create mock client
-    queryContentClient = new QueryContentClient(ContentfulDeliveryClient);
+    queryContentClient = new QueryContentClient(MockQueryContentClient);
   });
-  it("runs getContentByType", async () => {
+  it("should call client getEntries", async () => {
     // spy that client.getEntries is called when calling queryContentClient.getContentByType is called
-    const entries = await queryContentClient.getContentByType(
-      "convertedCurrency"
-    );
-    console.log("entries", entries);
-    // expect(true).toBe(true);
+    await queryContentClient.getContentByType("convertedCurrency");
+    expect(mockGetEntries).toBeCalled();
   });
-});
-
-describe("FetchClient", () => {
-  const url = "https://currency-converter5.p.rapidapi.com";
-  const headers = {
-    "Content-Type": "application/json",
-    "X-RapidAPI-Key": `${process.env.NEXT_PUBLIC_CURRENCY_CONVERTER_API_KEY}`,
-    "X-RapidAPI-Host": "currency-converter5.p.rapidapi.com",
-  };
-  const CurrencyConvertClient = new FetchClient(url, headers);
-  const defaultParams: CurrencyConverterParams = {
-    from: "USD",
-    to: "BRL",
-    amount: "1",
-  };
-  // try {
-  //   const data = await CurrencyConvertClient.get(defaultParams);
-  //   console.log("data", data);
-  // } catch (e) {
-  //   console.log("error", e);
-  // }
-  it("should use currency converter", async () => {
-    console.log(
-      "process.env.NEXT_PUBLIC_CURRENCY_CONVERTER_API_KEY",
-      process.env.NEXT_PUBLIC_CURRENCY_CONVERTER_API_KEY
-    );
-    const c = await CurrencyConvertClient.get({
-      path: "currency/convert",
-      searchParams: defaultParams,
-    });
-
-    console.log("@@c==>", c);
-    expect(true).toBe(true);
-  });
-
-  // let queryContentClient: QueryContentClient;
-  // beforeAll(() => {
-  //   // create mock client
-  //   queryContentClient = new QueryContentClient(ContentfulDeliveryClient);
-  // });
-  // it("runs getContentByType", async () => {
-  //   // spy that client.getEntries is called when calling queryContentClient.getContentByType is called
-  //   const entries = await queryContentClient.getContentByType(
-  //     "convertedCurrency"
-  //   );
-  //   console.log("entries", entries);
-  //   // expect(true).toBe(true);
+  //@todo - the error is not being caught within jest, not sure whats up
+  // it("throw and error when the promise rejects", () => {
+  //   expect(
+  //     async () => await queryContentClient.getContentByType("invalidContentId")
+  //   ).toThrow(Error);
   // });
 });
 
-describe("lib functions", () => {
-  it("should filter out items that are over 24 hours old", () => {
-    //isWithinTwentyFourHours;
-  });
+describe("library functions", () => {
   it("should format contentful response", () => {
-    //formatCurrencyConversionResponse()
+    convertedCurrencyDataMock;
+    const timestamp = "2023-01-24T15:45:03.065Z";
+    const formattedData = formatCurrencyConversionResponse(
+      convertedCurrencyDataMock,
+      timestamp
+    );
+    expect(formattedData).toEqual({
+      amount: { "en-US": 1 },
+      currencyConversion: {
+        "en-US": {
+          amount: "1.0000",
+          base_currency_code: "USD",
+          base_currency_name: "United States dollar",
+          rates: {
+            BRL: {
+              currency_name: "Brazilian real",
+              rate: "5.0737",
+              rate_for_amount: "5.0737",
+            },
+          },
+          status: "success",
+          updated_date: "2023-01-26",
+        },
+      },
+      date: { "en-US": "2023-01-24T15:45:03.065Z" },
+      from: { "en-US": "USD" },
+      title: { "en-US": "From [USD] to [BRL] | [2023-01-24T15:45:03.065Z]" },
+      to: { "en-US": "BRL" },
+    });
+  });
+  it("should indicate a timestamp is over 24 hours", () => {
+    const nowTimestamp = "2023-01-24T15:00:00.000Z";
+    const thenTimestamp = "2023-01-23T14:00:00.000Z"; // 25 hours before "now"
+    const timestampTest = isWithinTwentyFourHours(nowTimestamp, thenTimestamp);
+    expect(timestampTest).toBe(false);
+  });
+  it("should indicate a timestamp is less than 24 hours", () => {
+    const nowTimestamp = "2023-01-24T15:00:00.000Z";
+    const thenTimestamp = "2023-01-23T16:00:00.000Z"; // 23 hours before "now"
+    const timestampTest = isWithinTwentyFourHours(nowTimestamp, thenTimestamp);
+    expect(timestampTest).toBe(true);
   });
 });
+
+describe("Manage Content", () => {
+  // let queryContentClient: IQueryContentClient;
+  // beforeAll(() => {
+  //   queryContentClient = new QueryContentClient(MockQueryContentClient);
+  // });
+  // it("should call client getEntries", async () => {
+  //   // spy that client.getEntries is called when calling queryContentClient.getContentByType is called
+  //   await queryContentClient.getContentByType("convertedCurrency");
+  //   expect(mockGetEntries).toBeCalled();
+  // });
+  //@todo - the error is not being caught within jest, not sure whats up
+  // it("throw and error when the promise rejects", () => {
+  //   expect(
+  //     async () => await queryContentClient.getContentByType("invalidContentId")
+  //   ).toThrow(Error);
+  // });
+});
+
 // required to run jest with current next configuration
 export {};

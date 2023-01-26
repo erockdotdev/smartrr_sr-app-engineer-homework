@@ -1,5 +1,7 @@
+import { ConvertedCurrencyData } from "src/ts/CurrencyConverterAPI";
+
 export const formatCurrencyConversionResponse = (
-  latestCurrency: any,
+  latestCurrency: ConvertedCurrencyData,
   timestamp: string
 ) => {
   const { base_currency_code, amount } = latestCurrency;

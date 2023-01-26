@@ -33,7 +33,7 @@ export default async function handler(
       searchParams: { format: "json", ...params },
     });
 
-    // contentful management api below
+    //contentful management api below
     const timestamp = createTimestamp();
     const formattedResponse: ConvertedCurrencyFields =
       formatCurrencyConversionResponse(latestCurrency, timestamp);
@@ -41,14 +41,16 @@ export default async function handler(
       ContentTypeIDs.convertedCurrency,
       formattedResponse
     );
-    // @todo: temp workaround for publish not succeeding on prod site
-    setTimeout(() => {
-      manageContentClient.publishContent(entry);
-      response.status(200).json({
-        status: "success",
-        message: `Successfully created entry for ${entry.sys.id}`,
-      });
-    }, 300);
+    try {
+      await manageContentClient.publishContent(entry);
+    } catch (e: any) {
+      throw Error(`error publishing entry ${entry.sys.id} to contentful`);
+    }
+
+    response.status(200).json({
+      status: "success",
+      message: `Successfully created entry for ${entry.sys.id}`,
+    });
   } catch (error) {
     response.status(500).json({ error });
   }
