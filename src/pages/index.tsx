@@ -1,12 +1,16 @@
 import { useEffect, useState } from "react";
 
-import { getEntries } from "src/services/contentful/content-delivery";
+import {
+  ContentfulDeliveryClient,
+  QueryContentClient,
+} from "src/services/contentful/content-delivery";
 import CurrencyList from "src/components/currencies/currencies-list";
-import { ConvertedCurrencyEntry } from "src/ts/types";
+import { ConvertedCurrencyEntry } from "src/ts/Contentful/content-delivery-api";
 import { ContentTypeIDs } from "src/ts/enums";
 import { isWithinTwentyFourHours } from "src/lib/isWithinTwentyFourHours";
 
 import styles from "@/pages/index.module.css";
+import { ConvertedCurrencyEntryCollection } from "src/ts/Contentful/content-delivery-api";
 
 export default function Home() {
   const [convertedCurrencies, setConvertedCurrencies] = useState<
@@ -14,12 +18,17 @@ export default function Home() {
   >([]);
 
   useEffect(() => {
-    getEntries(ContentTypeIDs.convertedCurrency)
-      .then((entries: ConvertedCurrencyEntry[]) => {
-        entries.filter(entry => {
-          return isWithinTwentyFourHours(entry.fields.date);
-        });
-        setConvertedCurrencies(entries);
+    const queryContentClient = new QueryContentClient(ContentfulDeliveryClient);
+    queryContentClient
+      .getContentByType(ContentTypeIDs.convertedCurrency)
+      .then((entries: ConvertedCurrencyEntryCollection) => {
+        const filteredEntries = entries.items.filter(
+          (entry: ConvertedCurrencyEntry) => {
+            // @todo: this seems like it is filtering out too many entries
+            return isWithinTwentyFourHours(entry.fields.date);
+          }
+        );
+        setConvertedCurrencies(filteredEntries);
       })
       .catch((e: any) => console.error("Error", e));
   }, []);

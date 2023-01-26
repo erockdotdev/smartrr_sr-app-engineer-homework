@@ -1,13 +1,16 @@
 import React from "react";
-import { ConvertedCurrencyEntry } from "src/ts/types";
-import CurrencyItem from "../currency-item";
+import { ConvertedCurrencyEntry } from "src/ts/Contentful/content-delivery-api";
+import CurrencyEntry from "../currency-entry";
 
 const renderCurrencyListItems = (
-  convertedCurrencies: ConvertedCurrencyEntry[]
+  convertedCurrencyEntries: ConvertedCurrencyEntry[]
 ) => {
-  return convertedCurrencies.map((currencyItem: ConvertedCurrencyEntry) => {
+  return convertedCurrencyEntries.map(convertedCurrencyEntry => {
     return (
-      <CurrencyItem key={currencyItem.sys.id} currencyItem={currencyItem} />
+      <CurrencyEntry
+        key={convertedCurrencyEntry.sys.id}
+        convertedCurrencyEntry={convertedCurrencyEntry}
+      />
     );
   });
 };

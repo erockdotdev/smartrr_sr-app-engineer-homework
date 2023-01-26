@@ -1,5 +1,7 @@
-export const formatCurrencyConversionResponse = (latestCurrency: any) => {
-  const timestamp = new Date().toJSON();
+export const formatCurrencyConversionResponse = (
+  latestCurrency: any,
+  timestamp: string
+) => {
   const { base_currency_code, amount } = latestCurrency;
   const toCountryCode = Object.keys(latestCurrency.rates)[0];
 

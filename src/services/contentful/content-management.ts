@@ -1,11 +1,15 @@
 import { KeyValueMap } from "contentful-management/types";
-import { createClient } from "contentful-management";
+import { createClient, Entry } from "contentful-management";
 
 const client = createClient({
   accessToken: `${process.env.CONTENTFUL_CONTENT_MANAGEMENT_API}`,
 });
 
-async function createEntry<T extends KeyValueMap>(
+export async function publishEntry<T extends KeyValueMap>(entry: Entry) {
+  entry.publish();
+}
+
+export async function createEntry<T extends KeyValueMap>(
   contentTypeId: string,
   fields: T
 ) {
@@ -19,14 +23,10 @@ async function createEntry<T extends KeyValueMap>(
       // `${process.env.NEXT_PUBLIC_CONTENTFUL_ENVIRONMENT}`
     );
     const entry = await environment.createEntry(contentTypeId, { fields });
-    // @todo publish should be callable on entry - will have to come back to this work around
-    const getEntry = await environment.getEntry(entry.sys.id);
-    getEntry.publish();
-
     return entry;
   } catch (e) {
     console.error("Error", e);
   }
 }
 
-export { createEntry };
+// export { createEntry };

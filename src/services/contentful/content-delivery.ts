@@ -1,23 +1,35 @@
-import { createClient } from "contentful";
-import {
-  ConvertedCurrencyEntry,
-  ConvertedCurrencyResponse,
-} from "src/ts/types";
+import { ContentfulClientApi, createClient } from "contentful";
 
-export const client = createClient({
+import {
+  ContentTypes,
+  ConvertedCurrencyFields,
+  ConvertedCurrencyEntryCollection,
+} from "src/ts/Contentful/content-delivery-api";
+
+export const ContentfulDeliveryClient = createClient({
   space: `${process.env.NEXT_PUBLIC_CONTENTFUL_SPACE_ID}`,
   accessToken: `${process.env.NEXT_PUBLIC_CONTENTFUL_CONTENT_DELIVERY_API}`,
 });
 
-export async function getEntries(
-  contentType: string
-): Promise<ConvertedCurrencyEntry[]> {
-  try {
-    const entries = await client.getEntries<ConvertedCurrencyResponse>({
-      content_type: contentType,
-    });
-    return entries.items;
-  } catch (e: any) {
-    throw Error(e);
+export interface IQueryContentClient {
+  client: ContentfulClientApi;
+  getContentByType: (
+    contentType: ContentTypes
+  ) => Promise<ConvertedCurrencyEntryCollection>;
+}
+
+//@todo: make this a singleton
+export class QueryContentClient implements IQueryContentClient {
+  client: IQueryContentClient["client"];
+  constructor(client: IQueryContentClient["client"]) {
+    this.client = client;
+  }
+  async getContentByType(
+    contentType: ContentTypes
+  ): Promise<ConvertedCurrencyEntryCollection> {
+    const data = await this.client.getEntries<ConvertedCurrencyFields>(
+      contentType
+    );
+    return data;
   }
 }
