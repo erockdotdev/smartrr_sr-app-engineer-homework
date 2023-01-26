@@ -8,6 +8,14 @@ import {
 // import { CurrencyConverter } from "../src/services/currency-converter";
 import { ContentTypeIDs } from "../src/ts/enums";
 import { convertedCurrencyDataMock } from "../src/mocks/convertedCurrencyData";
+import CurrencyList from "../src/components/currencies/currencies-list";
+import { recentEntries } from "../src/lib/recent-entries";
+import { ConvertedCurrencyEntryCollection as ConvertedCurrencyEntryCollectionMock } from "../src/mocks/convertedCurrencyEntryCollection";
+import {
+  ConvertedCurrencyEntry,
+  ConvertedCurrencyEntryCollection,
+} from "../src/ts/Contentful/content-delivery";
+import { sortEntries } from "../src/lib/sort-entries";
 
 const mockGetEntries = jest.fn();
 
@@ -16,7 +24,7 @@ function getEntries<T>(query?: any) {
     if (Object.values(ContentTypeIDs).includes(query)) {
       resolve(mockGetEntries());
     }
-    reject("reject");
+    reject();
   });
 }
 
@@ -85,6 +93,22 @@ describe("library functions", () => {
     const thenTimestamp = "2023-01-23T16:00:00.000Z"; // 23 hours before "now"
     const timestampTest = isWithinTwentyFourHours(nowTimestamp, thenTimestamp);
     expect(timestampTest).toBe(true);
+  });
+  it("filter out entries older than 24 hours", () => {
+    const timestamp = "2023-01-24T15:00:00.000Z";
+    const filteredEntries = recentEntries(
+      ConvertedCurrencyEntryCollectionMock as unknown as ConvertedCurrencyEntryCollection,
+      timestamp
+    );
+    expect(filteredEntries.length).toBe(26);
+  });
+  it("sort entries", () => {
+    const sortedEntries = sortEntries(
+      ConvertedCurrencyEntryCollectionMock.items as unknown as ConvertedCurrencyEntry[]
+    );
+    expect(new Date(sortedEntries[0].fields.date).getTime()).toBeGreaterThan(
+      new Date(sortedEntries[sortedEntries.length - 1].fields.date).getTime()
+    );
   });
 });
 

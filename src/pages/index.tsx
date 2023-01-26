@@ -9,6 +9,8 @@ import { isWithinTwentyFourHours } from "src/lib/isWithinTwentyFourHours";
 import styles from "@/pages/index.module.css";
 import { ConvertedCurrencyEntryCollection } from "src/ts/Contentful/content-delivery";
 import { createTimestamp } from "../lib/createTimestamp";
+import { recentEntries } from "src/lib/recent-entries";
+import { sortEntries } from "src/lib/sort-entries";
 
 export default function Home() {
   const [convertedCurrencies, setConvertedCurrencies] = useState<
@@ -21,21 +23,10 @@ export default function Home() {
     queryContentClient
       .getContentByType(ContentTypeIDs.convertedCurrency)
       .then((entries: ConvertedCurrencyEntryCollection) => {
-        const filteredEntries = entries.items
-          .filter((entry: ConvertedCurrencyEntry) => {
-            const timestamp = createTimestamp();
-            const timeTest = isWithinTwentyFourHours(
-              timestamp,
-              entry.fields.date
-            );
-            return isWithinTwentyFourHours(timestamp, entry.fields.date);
-          })
-          .sort((a: ConvertedCurrencyEntry, b: ConvertedCurrencyEntry) => {
-            const aDate = new Date(a.fields.date);
-            const bDate = new Date(b.fields.date);
-            return bDate.getTime() - aDate.getTime();
-          });
-        setConvertedCurrencies(filteredEntries);
+        const timestamp = createTimestamp();
+        const filteredEntries = recentEntries(entries, timestamp);
+        const sortedEntries = sortEntries(filteredEntries);
+        setConvertedCurrencies(sortedEntries);
       })
       .catch((e: any) => console.error(e));
   }, []);

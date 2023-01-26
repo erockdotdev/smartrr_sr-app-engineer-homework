@@ -1,14 +1,20 @@
-import { render, screen } from "@testing-library/react";
-import Home from "src/pages/index";
+import { render, screen, within } from "@testing-library/react";
+import { ConvertedCurrencyEntryCollection } from "../src/mocks/convertedCurrencyEntryCollection";
+import CurrencyList from "../src/components/currencies/currencies-list";
+import { ConvertedCurrencyEntry } from "../src/ts/Contentful/content-delivery";
 
-describe("Home", () => {
-  it("renders a heading", () => {
-    render(<Home />);
-
-    const heading = screen.getByRole("heading", {
-      name: /welcome to next\.js!/i,
-    });
-
-    expect(heading).toBeInTheDocument();
+describe("CurrencyList", () => {
+  it("renders a list of currencies", () => {
+    render(
+      <CurrencyList
+        currencies={
+          ConvertedCurrencyEntryCollection.items as unknown as ConvertedCurrencyEntry[]
+        }
+      />
+    );
+    const list = screen.getByRole("list");
+    const { getAllByRole } = within(list);
+    const items = getAllByRole("listitem");
+    expect(items).toHaveLength(48);
   });
 });

@@ -15,7 +15,11 @@ const renderCurrencyListItems = (
   });
 };
 
-export default function CurrencyList(props: any) {
-  const { currencies } = props;
+export default function CurrencyList({
+  currencies,
+}: {
+  currencies: ConvertedCurrencyEntry[];
+}) {
+  // const { currencies } = props;
   return <ul>{renderCurrencyListItems(currencies)}</ul>;
 }

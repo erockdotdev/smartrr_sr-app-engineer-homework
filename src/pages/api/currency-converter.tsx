@@ -33,7 +33,6 @@ export default async function handler(
       route: defaultRoute,
       searchParams: { format: "json", ...params },
     });
-    console.log(latestCurrency);
     if (latestCurrency.status === "failed") {
       console.error("LatestCurrency Error", latestCurrency.error);
       throw new Error(latestCurrency.error);
