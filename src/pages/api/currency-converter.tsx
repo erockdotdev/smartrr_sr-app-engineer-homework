@@ -1,4 +1,3 @@
-import "../../lib/fetch-polyfill";
 import { NextApiRequest, NextApiResponse } from "next";
 import { formatCurrencyConversionResponse } from "src/lib/contentful-currency-conversion-format";
 import { createTimestamp } from "src/lib/createTimestamp";
@@ -34,8 +33,10 @@ export default async function handler(
       searchParams: { format: "json", ...params },
     });
     if (latestCurrency.status === "failed") {
-      console.error("LatestCurrency Error", latestCurrency.error);
-      response.status(500).json({ Error: latestCurrency.error });
+      console.error("LatestCurrency Error:", latestCurrency.error);
+      response
+        .status(latestCurrency.code)
+        .json({ Error: latestCurrency.error });
     }
     //contentful management api below
     const timestamp = createTimestamp();
