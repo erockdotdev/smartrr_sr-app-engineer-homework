@@ -33,7 +33,7 @@ This application uses [Currency Converter API](https://rapidapi.com/natkapral/ap
 `api/currency-converter?from=USD&to=BRL&amount=1` : fetches data from currency converter and saves to contentful 
 
 ## Chron Job
-Github Actions runs a chron job that triggers the `api/currency-converter` once an hour with the correct params. You can view the job in the root `.github/workflows` directory in the `chron.yml` file
+Github Actions runs a chron job that triggers the `api/currency-converter` once an hour with the correct params. You can view the job in the root `.github/workflows` directory in the `chron.yml` file.
 
 ## Demo
 

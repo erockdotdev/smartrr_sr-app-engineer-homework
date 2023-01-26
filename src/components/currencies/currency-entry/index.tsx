@@ -14,9 +14,6 @@ export default function CurrencyEntry({
     timeZone: "America/New_York",
   });
 
-  console.log("amount", amount);
-  console.log("currencyConversion", currencyConversion);
-
   return (
     <li className={style["currency-entry"]}>
       <h3>Rate: {currencyConversion.rates[`${to}`].rate} </h3>
