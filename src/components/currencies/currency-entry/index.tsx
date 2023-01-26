@@ -8,10 +8,14 @@ interface ICurrencyEntry {
 export default function CurrencyEntry({
   convertedCurrencyEntry,
 }: ICurrencyEntry) {
-  const { date, to, currencyConversion } = convertedCurrencyEntry.fields;
+  const { date, to, currencyConversion, amount } =
+    convertedCurrencyEntry.fields;
   const formatDate = new Date(date).toLocaleString("en-US", {
     timeZone: "America/New_York",
   });
+
+  console.log("amount", amount);
+  console.log("currencyConversion", currencyConversion);
 
   return (
     <li className={style["currency-entry"]}>

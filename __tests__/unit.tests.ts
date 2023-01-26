@@ -112,23 +112,5 @@ describe("library functions", () => {
   });
 });
 
-describe("Manage Content", () => {
-  // let queryContentClient: IQueryContentClient;
-  // beforeAll(() => {
-  //   queryContentClient = new QueryContentClient(MockQueryContentClient);
-  // });
-  // it("should call client getEntries", async () => {
-  //   // spy that client.getEntries is called when calling queryContentClient.getContentByType is called
-  //   await queryContentClient.getContentByType("convertedCurrency");
-  //   expect(mockGetEntries).toBeCalled();
-  // });
-  //@todo - the error is not being caught within jest, not sure whats up
-  // it("throw and error when the promise rejects", () => {
-  //   expect(
-  //     async () => await queryContentClient.getContentByType("invalidContentId")
-  //   ).toThrow(Error);
-  // });
-});
-
 // required to run jest with current next configuration
 export {};

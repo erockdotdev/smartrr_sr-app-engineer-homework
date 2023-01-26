@@ -1,29 +1,60 @@
-# Next.js + Jest
+# Currency Converter | USD/BRL currency conversion rates every hour
 
-This example shows how to configure Jest to work with Next.js.
+This application uses [Currency Converter API](https://rapidapi.com/natkapral/api/currency-converter5), [Next.js](https://nextjs.org/) hosted on [Vercel](https://vercel.com/) [GitHub Actions](https://github.com/features/actions) to and [Contentful](https://www.contentful.com/) to fetch, store and retrieve USD/BRL currency conversion rates over the last 24 hours.
 
-This includes Next.js' built-in support for Global CSS, CSS Modules and TypeScript.
 
-## How to Use
+## Prerequisites
 
-Quickly get started using [Create Next App](https://github.com/vercel/next.js/tree/canary/packages/create-next-app#readme)!
+- Node 18.X.X
+- NPM 8.X.X
 
-In your terminal, run the following command:
+## Recommendations
+- Some knowledge of: 
+  - Next.js
+  - Typescript
+  - React Testing Library
+  - Jest
+  - Contentful
+  - Event based systems
+## Getting Started
+- clone repo and run `yarn` or `npm install`
+- environment variables
+  - copy `.env.local.example` and rename to `.env.local`
+  - acquire and add var to `.env.local` (ask me and I'll share them)
+- run `yarn dev` or `npm run` start to launch
 
-```bash
-npx create-next-app --example with-jest with-jest-app
-```
+## Scripts
+- `yarn dev`: start the application
+- `yarn build`: build a local copy of prod app
+- `yarn start`: serve local build
+- `yarn test`: run tests
 
-```bash
-yarn create next-app --example with-jest with-jest-app
-```
+## Endpoints
+`api/currency-converter?from=USD&to=BRL&amount=1` : fetches data from currency converter and saves to contentful 
 
-```bash
-pnpm create next-app --example with-jest with-jest-app
-```
+## Chron Job
+Github Actions runs a chron job that triggers the `api/currency-converter` once an hour with the correct params. You can view the job in the root `.github/workflows` directory in the `chron.yml` file
 
-## Run Jest Tests
+## Demo
 
-```bash
-npm test
-```
+This app is available at [smartrr-sr-app-engineer-homework](https://smartrr-sr-app-engineer-homework.vercel.app/)
+
+## Open issues 🤔
+
+### Using fetch in Next Serverless Function
+I had to make a last minute switch from fetch to axios. Next.JS Serverless Functions were not playing well with fetch giving this warning occasionally. 
+>Warning: This is an experimental feature and could change at any time" message
+I tried to resolve with `node-fetch` but that didn't cut it.
+The serverless function would also occasionally read `NEXT_PUBLIC_CURRENCY_CONVERTER_API_KEY` env var as undefined so that is hardcoded as well
+
+### Test Coverage
+Query Content test failure test is throwing the error I'm expecting but the test isn't catching it and the app crashes.
+
+ManageContentClient tests are missing - those would be good to cover
+
+Overall the test probably could be a little more thorough but I could use some guidance in that area.
+
+### Various Todos
+There are a few todo's throughout the app - just thought in certain places that could be improved on or otherwise cleaned up.
+
+
